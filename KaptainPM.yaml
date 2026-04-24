@@ -1,0 +1,26 @@
+apiVersion: kaptain.org/1.13
+kind: docker-build-dockerfile
+
+spec:
+  global:
+    projectName:
+      stripRepositoryNamePrefix: test
+    tokens:
+      delimiterStyle: mustache
+      nameStyle: UPPER_SNAKE
+  main:
+    docker:
+      platform: linux/amd64,linux/arm64
+      dockerfile:
+        subPath: src/docker
+        subPathLinuxAmd64: src/docker
+        subPathLinuxArm64: src/docker
+        squash: squash-all
+        noCache: false
+    hooks:
+      preBuild: test-hooks/pre-build.bash
+      preTaggingTests: test-hooks/pre-tagging-tests.bash
+      postVersionsAndNaming: test-hooks/post-versions-and-naming.bash
+      preDockerPrepare: test-hooks/pre-docker-prepare.bash
+      postDockerTests: test-hooks/post-docker-tests.bash
+      postBuild: test-hooks/post-build.bash
